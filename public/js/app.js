@@ -2229,6 +2229,22 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -2244,7 +2260,12 @@ __webpack_require__.r(__webpack_exports__);
         event_days: []
       },
       events: [],
-      isSaving: false
+      isSaving: false,
+      alert: {
+        message: "",
+        type: "alert-success",
+        show: false
+      }
     };
   },
 
@@ -2269,8 +2290,27 @@ __webpack_require__.r(__webpack_exports__);
           this.events[existingEvent].event_name = savedEvent.event_name;
           this.events[existingEvent].event_days = savedEvent.event_days;
         }
-      }).catch(error => {}).then(() => {
+
+        this.alert.message = `<p class="mb-1">${error.response.data.message}?</p>`;
+        this.alert.type = "alert-success";
+      }).catch(error => {
+        this.alert.message = `<p class="mb-1">${error.response.data.message}?</p>`;
+        this.alert.type = "alert-warning";
+
+        if (typeof error.response.data.errors != 'undefined') {
+          Object.entries(error.response.data.errors).forEach(error => {
+            const [key, messages] = error;
+            messages.forEach(msg => {
+              this.alert.message += `<p class="mb-1"> ${msg} </p>`;
+            });
+          });
+        }
+      }).then(() => {
         this.isSaving = false;
+        this.alert.show = true;
+        setTimeout(() => {
+          this.alert.show = false;
+        }, 5000);
       });
     }
 
@@ -37996,6 +38036,47 @@ var render = function() {
         _c("div", { staticClass: "card-body" }, [
           _c("div", { staticClass: "row" }, [
             _c("div", { staticClass: "col-4" }, [
+              _c(
+                "div",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.alert.show,
+                      expression: "alert.show"
+                    }
+                  ],
+                  staticClass: "alert alert-dismissible",
+                  class: _vm.alert.type,
+                  attrs: { role: "alert" }
+                },
+                [
+                  _c("span", {
+                    domProps: { innerHTML: _vm._s(_vm.alert.message) }
+                  }),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "close",
+                      attrs: { type: "button", "aria-label": "Close" },
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          return _vm.dismissAlert()
+                        }
+                      }
+                    },
+                    [
+                      _c("span", { attrs: { "aria-hidden": "true" } }, [
+                        _vm._v("×")
+                      ])
+                    ]
+                  )
+                ]
+              ),
+              _vm._v(" "),
               _c(
                 "form",
                 {

@@ -8,6 +8,22 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-4">
+                            <div
+                                class="alert alert-dismissible"
+                                :class="alert.type"
+                                role="alert"
+                                v-show="alert.show"
+                            >
+                                <span v-html="alert.message"></span>
+                                <button
+                                    type="button"
+                                    class="close"
+                                    aria-label="Close"
+                                    @click.prevent="dismissAlert()"
+                                >
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
                             <form id="event-form" @submit.prevent="saveEvent">
                                 <div class="form-group">
                                     <label for="event-name">Event</label>
@@ -183,6 +199,11 @@ export default {
             },
             events: [],
             isSaving: false,
+            alert: {
+                message: "",
+                type: "alert-success",
+                show: false,
+            },
         };
     },
     created() {
@@ -212,10 +233,30 @@ export default {
                         this.events[existingEvent].event_days =
                             savedEvent.event_days;
                     }
+
+                    this.alert.message = `<p class="mb-1">${error.response.data.message}?</p>`;
+                    this.alert.type = "alert-success";
                 })
-                .catch((error) => {})
+                .catch((error) => {
+                    this.alert.message = `<p class="mb-1">${error.response.data.message}?</p>`;
+                    this.alert.type = "alert-warning";
+
+                    if(typeof error.response.data.errors != 'undefined'){
+                        Object.entries(error.response.data.errors).forEach(error =>{
+                            const [key, messages] = error;
+                            messages.forEach(msg =>{
+                                this.alert.message += `<p class="mb-1"> ${msg} </p>`;
+                            })
+                        })
+                    }
+                })
                 .then(() => {
                     this.isSaving = false;
+                    this.alert.show = true;
+
+                    setTimeout(() => {
+                        this.alert.show = false;
+                    }, 5000);
                 });
         },
     },
