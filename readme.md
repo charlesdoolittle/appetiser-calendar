@@ -5,6 +5,6 @@ This app can only save events as per the requirements
 
 ## Tech
 
-*[Laravel](https://laravel.com/) - PHP Framework for Web Artisans
-*[Vue.js](https://laravel.com/) - The Progressive JavaScript Framework
-*[Day.js](https://day.js.org/en/) - Fast 2kB alternative to Moment.js with the same modern API
+* [Laravel](https://laravel.com/) - PHP Framework for Web Artisans
+* [Vue.js](https://laravel.com/) - The Progressive JavaScript Framework
+* [Day.js](https://day.js.org/en/) - Fast 2kB alternative to Moment.js with the same modern API
